@@ -8,6 +8,8 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v4.app.Fragment;
+
 
 public class CrimePagerActivity extends FragmentActivity {
 	private ViewPager mViewPager;
@@ -30,7 +32,7 @@ public class CrimePagerActivity extends FragmentActivity {
 			}
 		
 			@Override
-			public android.support.v4.app.Fragment getItem(int pos){
+			public Fragment getItem(int pos){
 				Crime crime = mCrimes.get(pos);
 				return CrimeFragment.newInstance(crime.getId());
 			}

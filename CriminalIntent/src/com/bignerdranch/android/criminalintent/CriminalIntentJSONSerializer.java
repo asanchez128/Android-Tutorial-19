@@ -25,7 +25,7 @@ public class CriminalIntentJSONSerializer {
    private String mFilename;
    private File mFile;
    
-   private static final String TAG = "CrimeLab";
+   private static final String TAG = "CrimeLabCrimeLab";
    
    public CriminalIntentJSONSerializer(Context c, String f){
       mContext = c;

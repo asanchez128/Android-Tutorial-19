@@ -4,8 +4,10 @@ import java.util.ArrayList;
 
 import android.annotation.TargetApi;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -18,6 +20,7 @@ import android.widget.TextView;
 
 public class CrimelListFragment extends ListFragment {
 	private ArrayList<Crime> mCrimes;
+	private boolean mSubtitleVisible;
 	private static final String TAG = "CrimeListFragment";
 	@Override
 	public void onCreate(Bundle savedInstanceState){
@@ -27,6 +30,8 @@ public class CrimelListFragment extends ListFragment {
 		mCrimes = CrimeLab.get(getActivity()).getCrimes();
 		CrimeAdapter adapter = new CrimeAdapter(mCrimes);
 		setListAdapter(adapter);
+		setRetainInstance(true);
+		mSubtitleVisible = false;
 	}
 	
 	@Override 
@@ -78,6 +83,10 @@ public class CrimelListFragment extends ListFragment {
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater){
 		super.onCreateOptionsMenu(menu, inflater);
 		inflater.inflate(R.menu.fragment_crime_list, menu);
+		MenuItem showSubtitle = menu.findItem(R.id.menu_item_show_subtitle);
+		if(mSubtitleVisible && showSubtitle != null){
+			showSubtitle.setTitle(R.string.hide_subtitle);
+		}
 	}
 	
 	@TargetApi(11)
@@ -92,10 +101,32 @@ public class CrimelListFragment extends ListFragment {
 			startActivityForResult(i, 0);
 			return true;
 		case R.id.menu_item_show_subtitle:
-			getActivity().getActionBar().setSubtitle(R.string.subtitle);
+			if(getActivity().getActionBar().getSubtitle() == null){
+				getActivity().getActionBar().setSubtitle(R.string.subtitle);
+				mSubtitleVisible = true;
+				item.setTitle(R.string.hide_subtitle);
+			} else {
+				getActivity().getActionBar().setSubtitle(null);
+				mSubtitleVisible = false;
+				item.setTitle(R.string.show_subtitle);
+			}
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);
 		}
+	}
+	
+	@TargetApi(11)
+	@Override
+	public View onCreateView(LayoutInflater inflater, ViewGroup parent,
+			Bundle savedInstanceState){
+		View v = super.onCreateView(inflater, parent, savedInstanceState);
+		
+		if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB){
+			if(mSubtitleVisible){
+				getActivity().getActionBar().setSubtitle(R.string.subtitle);
+			}
+		}
+		return v;
 	}
 }
